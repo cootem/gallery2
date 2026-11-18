@@ -113,7 +113,7 @@ class RssMapHelper {
 	';
 
 	$params = array();
-	if (isset($limit)) {
+	if ($limit > 0) {
 	    $params['limit'] = array('count' => $limit);
 	}
 

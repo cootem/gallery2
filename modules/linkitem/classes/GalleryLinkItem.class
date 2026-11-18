@@ -153,6 +153,16 @@ class GalleryLinkItem extends GalleryItem {
 	    }
 
 	    $phpVm = $gallery->getPhpVm();
+
+	    /* Clear any output buffers to ensure clean header transmission */
+	    while (@ob_get_level()) {
+		@ob_end_clean();
+	    }
+
+	    /* Prevent caching of this redirect to avoid Firefox hanging with cached state */
+	    $phpVm->header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
+	    $phpVm->header('Pragma: no-cache');
+	    $phpVm->header('Expires: Thu, 19 Nov 1981 08:52:00 GMT');
 	    $phpVm->header('Location: ' . str_replace('&amp;', '&', $link));
 	    $phpVm->exit_();
 	}

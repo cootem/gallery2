@@ -26,6 +26,7 @@
  * @version $Revision: 17829 $
  */
 class ErrorPageView extends GalleryView {
+    private $error;
 
     function setError($error) {
 	$this->_error = $error;

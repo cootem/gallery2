@@ -944,6 +944,10 @@ class GalleryStorageExtras /* the other half of GalleryStorage */ {
      * @see GalleryStorage::execute
      */
     function execute($statement, $data=array()) {
+	// PHP 8.2 fix: ensure $data is always an array
+	if ($data === null) {
+	    $data = array();
+	}
 	$ret = $this->_dbInit(true);
 	if ($ret) {
 	    return $ret;

@@ -466,6 +466,10 @@ class GalleryStorage {
      *               GallerySearchResults the result values
      */
     function search($query, $data=array(), $optional=array()) {
+	// PHP 8.2 fix: ensure $data is always an array
+	if ($data === null) {
+	    $data = array();
+	}
 	if (!isset($this->_db)) {
 	    list ($ret, $this->_db) = $this->_getConnection();
 	    if ($ret) {
@@ -1692,7 +1696,7 @@ class MySqlStorage extends GalleryStorage {
     function _setConnectionSettings(&$db) {
 	/* MySQL 4.1.0+ support UTF-8, for details, see: http://drupal.org/node/40515 */
 	$this->_serverInfo = ($this->_type == 'mysqli')
-	    ? mysqli_get_server_info($db->_connectionID) : mysql_get_server_info();
+	    ? mysqli_get_server_info($db->_connectionID) : mysqli_get_server_info($db->_connectionID);
 	if ($this->_serverInfo && version_compare($this->_serverInfo, '4.1.0', '>=')) {
 	    $this->_traceStart();
 	    $recordSet = $db->execute('SET NAMES "utf8"');
