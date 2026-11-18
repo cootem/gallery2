@@ -3,3 +3,4 @@ login.txt
 *.swp
 gallery2-data
 mysqldata
+tools/mobile-test/node_modules
