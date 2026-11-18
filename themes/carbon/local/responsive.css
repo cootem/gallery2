@@ -1,0 +1,55 @@
+/* Responsive additions for the Carbon theme (added 2026-11-10).
+ * Loaded after local/theme.css. Desktop: photos scale to fit the window.
+ * Phones/tablets (<=768px): single-column layout, 2-up thumbnails. */
+
+/* ---- Photo page: fluid image, any screen ---- */
+#gsImageView { text-align: center; }
+#gsImageView img.gcPhotoImage,
+#gsImageView #photo img {
+  max-width: 100%;
+  max-height: calc(100vh - 190px);
+  width: auto;
+  height: auto;
+}
+/* The ImageFrame border is a table of fixed-pixel edge images; it can't shrink, so drop the edges. */
+table.ImageFrame_carbon, table.ImageFrame_carbon tbody, table.ImageFrame_carbon tr,
+table.ImageFrame_carbon td.IMG { display: block; width: auto; }
+table.ImageFrame_carbon td.LLT, table.ImageFrame_carbon td.RRT, table.ImageFrame_carbon td.LL,
+table.ImageFrame_carbon td.RR, table.ImageFrame_carbon td.BL, table.ImageFrame_carbon td.BBL,
+table.ImageFrame_carbon td.BB, table.ImageFrame_carbon td.BR { display: none; }
+table.gsPhotoLayout { width: 100%; table-layout: fixed; }
+table.gsPhotoLayout td { overflow: hidden; }
+table.gsPhotoLayout > tbody > tr > td:nth-child(2) { width: 320px; }
+
+/* ---- Thumbnails never overflow their cell ---- */
+#gsThumbMatrix img { max-width: 100%; height: auto; }
+
+/* ---- Phones and small tablets ---- */
+@media screen and (max-width: 768px) {
+  body.gallery { margin: 0; }
+  #gsHeader table, #gsHeader tbody, #gsHeader tr, #gsHeader td,
+  #gsFooter table, #gsFooter tbody, #gsFooter tr, #gsFooter td { display: block; width: auto !important; text-align: left !important; }
+  #gsHeader img { max-width: 60%; height: auto; }
+
+  #gsNavBar div.gbSystemLinks, #gsNavBar div.gbBreadCrumb { float: none; text-align: left; }
+  #gsNavBar div.gbBreadCrumb { white-space: normal; padding: 4px 6px; }
+
+  table.gsAlbumLayout, table.gsAlbumLayout > tbody, table.gsAlbumLayout > tbody > tr, table.gsAlbumLayout > tbody > tr > td,
+  table.gsPhotoLayout, table.gsPhotoLayout > tbody, table.gsPhotoLayout > tbody > tr, table.gsPhotoLayout > tbody > tr > td {
+    display: block; width: auto !important; table-layout: auto;
+  }
+  #gsImageView img.gcPhotoImage, #gsImageView #photo img { max-height: none; }
+
+  /* Thumbnail grid: 2 across, wrapping */
+  table#gsThumbMatrix, table#gsThumbMatrix > tbody, table#gsThumbMatrix > tbody > tr { display: block; width: auto; }
+  table#gsThumbMatrix td.giAlbumCell, table#gsThumbMatrix td.giItemCell {
+    display: inline-block; width: 48% !important; box-sizing: border-box; vertical-align: top;
+  }
+  td.giAlbumCell table, td.giItemCell table { max-width: 100%; }
+
+  .gbNavigator div.first-and-previous, .gbNavigator div.next-and-last { float: none; display: inline-block; }
+  input[type=text], input[type=password], textarea, select { max-width: 100%; box-sizing: border-box; font-size: 16px; }
+}
+@media screen and (max-width: 420px) {
+  table#gsThumbMatrix td.giAlbumCell, table#gsThumbMatrix td.giItemCell { width: 100% !important; }
+}

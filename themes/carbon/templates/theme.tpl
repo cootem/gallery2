@@ -5,6 +5,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="{g->language}" xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     {* Let Gallery print out anything it wants to put into the <head> element *}
     {g->head}
 
@@ -13,7 +14,7 @@
     <meta name="description" content="{$theme.item.description|markup:strip}" />
     {/if}
     {if $theme.pageType != 'admin'}
-    <script type="text/javascript" src="{g->url href='themes/carbon/theme.js'}"></script>
+    <script type="text/javascript" src="{g->url href="themes/carbon/theme.js"}?v=2"></script>
     {/if}
 
     {* If Gallery doesn't provide a header, we use the album/photo title (or filename) *}
@@ -23,6 +24,7 @@
 
     {* Include this theme's style sheet *}
     <link rel="stylesheet" type="text/css" href="{g->theme url="theme.css"}"/>
+    <link rel="stylesheet" type="text/css" href="{g->theme url="responsive.css"}"/>
   </head>
   <body class="gallery">
     {if !empty($jsWarning)}

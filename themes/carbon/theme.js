@@ -249,3 +249,64 @@ function toggleExif(parentId, id) {
 
   exifVisible = !exifVisible;
 }
+
+/* Photo page navigation: left/right arrow keys and left/right swipe (added 2026-11-10, v2).
+ * Uses the existing Previous/Next navigator links, so it follows the album's own ordering.
+ * Add ?swipedebug=1 to a photo URL to show touch events on screen. */
+(function () {
+  function link(cls) {
+    var a = document.querySelector('.' + cls + ' a');
+    return a ? a.href : null;
+  }
+  function onPhotoPage() { return !!document.getElementById('gsImageView'); }
+  function go(cls) {
+    var url = link(cls);
+    if (url) { window.location.href = url; return true; }
+    return false;
+  }
+  function inField(el) {
+    return !!el && (/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.isContentEditable);
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (!onPhotoPage() || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || inField(e.target)) return;
+    if (e.key === 'ArrowRight') { if (go('buttonNext')) e.preventDefault(); }
+    else if (e.key === 'ArrowLeft') { if (go('buttonPrev')) e.preventDefault(); }
+  });
+
+  var dbg = null;
+  function say(msg) {
+    if (location.search.indexOf('swipedebug') < 0) return;
+    if (!dbg) {
+      dbg = document.createElement('div');
+      dbg.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:99999;background:#000;color:#0f0;font:12px monospace;padding:4px;white-space:pre-wrap';
+      document.body.appendChild(dbg);
+    }
+    dbg.textContent = msg;
+  }
+
+  var sx = 0, sy = 0, lx = 0, ly = 0, st = 0, tracking = false;
+  function zoomed() { return window.visualViewport && window.visualViewport.scale > 1.05; }  /* ignore while pinch-zoomed */
+  document.addEventListener('touchstart', function (e) {
+    tracking = onPhotoPage() && e.touches.length === 1 && !inField(e.target) && !zoomed();
+    say('start tracking=' + tracking + ' touches=' + e.touches.length + ' scale=' + (window.visualViewport ? window.visualViewport.scale : 'n/a'));
+    if (!tracking) return;
+    sx = lx = e.touches[0].clientX; sy = ly = e.touches[0].clientY; st = Date.now();
+  }, { passive: true });
+  document.addEventListener('touchmove', function (e) {
+    if (!tracking || !e.touches.length) return;
+    lx = e.touches[0].clientX; ly = e.touches[0].clientY;
+  }, { passive: true });
+  function finish(e) {
+    if (!tracking) return;
+    tracking = false;
+    var t = e.changedTouches && e.changedTouches[0];
+    var x = t ? t.clientX : lx, y = t ? t.clientY : ly;
+    var dx = x - sx, dy = y - sy, ms = Date.now() - st;
+    var ok = ms <= 1000 && Math.abs(dx) >= 50 && Math.abs(dx) >= 1.3 * Math.abs(dy);
+    say(e.type + ' dx=' + Math.round(dx) + ' dy=' + Math.round(dy) + ' ms=' + ms + ' -> ' + (ok ? (dx < 0 ? 'NEXT' : 'PREV') : 'ignored'));
+    if (ok) go(dx < 0 ? 'buttonNext' : 'buttonPrev');   /* swipe left = next, swipe right = previous */
+  }
+  document.addEventListener('touchend', finish, { passive: true });
+  document.addEventListener('touchcancel', finish, { passive: true });
+})();
